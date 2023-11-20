@@ -1,10 +1,14 @@
 package com.object.odocalendar;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import java.util.Date;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String TARGET_TABLE = "target";
@@ -51,11 +55,42 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(sql);
     }
 
-    public void insertCategory(String insertCategory){
+    public void insertCategory(String insert){
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "INSERT INTO " + CATEGORY_TABLE + " VALUES (null, " + insertCategory + ");";
+        String sql = "INSERT INTO " + CATEGORY_TABLE + " VALUES (null, " + insert + ");";
         db.execSQL(sql);
     }
 
-    public void insertTodo(){}
+    public void insertTarget(String insert){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sql = "INSERTO INTO " + TARGET_TABLE + " VALUES (null, " + insert + ");";
+        db.execSQL(sql);
+    }
+
+    public void insertTodo(String schedule, long selecDate, int check_achieve, Integer category){
+        String sql = "INSERT INTO " + TODO_TABLE + " (_id, SCHEDULE, DATE, CHECK_ACHIEVE, CATEGORY) VALUES (null, ?, ?, ?, ?)";
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        try{
+            db.execSQL(sql, new Object[]{schedule, selecDate, check_achieve, category});
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public String getAll(){
+        SQLiteDatabase db = getReadableDatabase();
+        String result = "";
+
+        Cursor cursor = db.rawQuery("SELECT * FROM todoCal.db", null);
+        while(cursor.moveToNext()){
+            result += cursor.getString(1) + "\n";
+            result += cursor.getString(2) + "\n";
+            // schedule이랑 date만 출력 테스트
+        }
+
+        return result;
+    }
 }

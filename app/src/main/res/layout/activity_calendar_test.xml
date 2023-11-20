@@ -6,4 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".CalendarTest">
 
+
+    <CalendarView
+        android:id="@+id/cv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusedMonthDateColor="#FF0303"
+        android:selectedWeekBackgroundColor="#CDDC39"
+        android:unfocusedMonthDateColor="#00BCD4"
+        android:layout_weight="1" />
+
 </LinearLayout>
