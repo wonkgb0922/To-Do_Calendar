@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivityWon">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -39,12 +39,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/textView"
+        <ListView
+            android:id="@+id/TodoListView"
             android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:text="TextView"
-            />
+            android:layout_height="match_parent" />
+
 
     </LinearLayout>
 
