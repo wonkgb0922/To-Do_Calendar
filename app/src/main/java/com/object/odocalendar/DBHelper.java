@@ -21,11 +21,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        String sqlTarget = "CREATE TABLE " + TARGET_TABLE + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, ACHIEVE TEXT);";
+        String sqlTarget = "CREATE TABLE " + TARGET_TABLE + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, ACHIEVE TEXT, MONTHWEEK INT," +
+                " TARGET_MONTH INT, TARGET_WEEK INTEGER);";
         db.execSQL(sqlTarget);
 
         String sqlCategory = "CREATE TABLE " + CATEGORY_TABLE + "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "CATEGORY_NAME TEXT);";
+                "CATEGORY_NAME TEXT, CATEGORY_COLOR TEXT);";
         db.execSQL(sqlCategory);
         setCategoryTable();
 
@@ -51,20 +52,37 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void setCategoryTable(){
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "INSERT INTO " + CATEGORY_TABLE + " VALUES (null, exercise), (null, study), (null, project), (null, meeting), (null, promise), (null, reservation);";
+        String sql = "INSERT INTO " + CATEGORY_TABLE + " VALUES (null, exercise), (null, study), " +
+                "(null, project), (null, meeting), (null, promise), (null, reservation);";
+        // 1. 카테고리에 색상을 저장할 color 생성 -> RGB16진수 사용으로 TEXT 설정
+        // 2. 기본 카테고리에 기본 색상 설정 -> 초기값 (setCategoryTable)
         db.execSQL(sql);
     }
 
-    public void insertCategory(String insert){
+    public void insertCategory(String name, String color){
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "INSERT INTO " + CATEGORY_TABLE + " VALUES (null, " + insert + ");";
-        db.execSQL(sql);
+        String sql = "INSERT INTO " + CATEGORY_TABLE + "(_id, CATEGORY_NAME, CATEGORY_COLOR) VALUES (null, ?, ?);";
+
+        db.beginTransaction();
+        try{
+            db.execSQL(sql, new Object[]{name, color});
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
-    public void insertTarget(String insert){
+    public void insertTarget(String detail, int monthOrWeek,int month, Integer week){
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "INSERTO INTO " + TARGET_TABLE + " VALUES (null, " + insert + ");";
-        db.execSQL(sql);
+        String sql = "INSERT INTO " + TARGET_TABLE + " (_id, ACHIEVE, MONTHWEEK, TARGET_MONTH, TARGET_WEEK) VALUES (null, ?, ?, ?, ?);";
+
+        db.beginTransaction();
+        try{
+            db.execSQL(sql, new Object[]{detail, monthOrWeek, month, week});
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public void insertTodo(String schedule, long selecDate, int check_achieve, Integer category){
@@ -93,4 +111,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return result;
     }
+
+    public void deleteTodo(int i){
+        SQLiteDatabase db = getReadableDatabase();
+        db.execSQL("DELETE FROM " + TODO_TABLE + " WHERE _id = " + i);
+    }
+
 }
