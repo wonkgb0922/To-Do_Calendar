@@ -66,4 +66,7 @@ public class MainActivityWon extends AppCompatActivity {
         act = new TodoPopupActivity(this, year, month, day);
         act.show();
     }
+    public void Refresh() {
+        // 새로고침
+    }
 }
